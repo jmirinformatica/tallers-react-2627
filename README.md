@@ -29,6 +29,16 @@ fas servir Git: [git-scm.com](https://git-scm.com/downloads).
 10. [Fitxa 10 — Proves amb Vitest i Testing Library](Fitxa10.md)
 11. [Fitxa 11 — Accessibilitat i desplegament](Fitxa11.md)
 
+## Annexos i exemples
+
+Els annexos amplien conceptes concrets sense allargar les fitxes principals:
+
+- [Fitxa 01 — Actualització de l'estat amb useState](Fitxa01_Annex_Actualitzacio_Estat.md)
+
+Els projectes per provar aquests conceptes s'incorporaran a
+[`exemples/`](exemples/README.md), agrupats per fitxa. Cada projecte tindrà
+instruccions per executar-lo i indicacions sobre què cal observar.
+
 ## Recursos oficials
 
 - [Aprèn React](https://react.dev/learn)
