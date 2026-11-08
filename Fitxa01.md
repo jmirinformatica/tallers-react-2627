@@ -199,7 +199,7 @@ Errors que cal evitar:
 
 Un esdeveniment com `onClick` rep una **funció**. Pots passar-hi el nom d'una funció (`onClick={incrementa}`) o una funció anònima (`onClick={() => ...}`).
 
-> **Per aprofundir:** l'[annex sobre l'actualització de l'estat amb `useState`](Annexos/Fitxa01_Annex_Actualitzacio_Estat.md) compara la forma directa i la funcional, explica les actualitzacions consecutives i inclou un component per experimentar-hi. És material complementari: no afegeix requisits a les activitats.
+> **Per aprofundir:** l'[annex sobre l'actualització de l'estat amb `useState`](Annexos/Fitxa01_Annex_Actualitzacio_Estat.md) compara la forma directa i la funcional i explica les actualitzacions consecutives. Pots experimentar-hi amb el [projecte de demostració](Exemples/Fitxa01/README.md). És material complementari: no afegeix requisits a les activitats.
 
 ### 1.7 Tailwind CSS v4
 

@@ -1,0 +1,55 @@
+:root {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  color: #172033;
+  background: #f6f8fb;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+section {
+  border-top: 1px solid #b8c1d1;
+  padding-block: 16px;
+}
+
+.comparacio {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+button, input {
+  font: inherit;
+  padding: 8px 12px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  color: #172033;
+  background: #e0ebff;
+  border: 1px solid #5c7093;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #cbdcff;
+}
+
+:focus-visible {
+  outline: 3px solid #2459bd;
+  outline-offset: 3px;
+}
+
+label {
+  display: block;
+}

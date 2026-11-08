@@ -35,9 +35,11 @@ Els annexos amplien conceptes concrets sense allargar les fitxes principals:
 
 - [Fitxa 01 — Actualització de l'estat amb useState](Annexos/Fitxa01_Annex_Actualitzacio_Estat.md)
 
-Els projectes per provar aquests conceptes s'incorporaran a
-[`exemples/`](exemples/README.md), agrupats per fitxa. Cada projecte tindrà
+Els projectes per provar aquests conceptes són a
+[`Exemples/`](Exemples/README.md), agrupats per fitxa. Cada projecte inclou
 instruccions per executar-lo i indicacions sobre què cal observar.
+
+- [Fitxa 01 — Experimenta amb l'actualització de l'estat](Exemples/Fitxa01/README.md)
 
 ## Recursos oficials
 

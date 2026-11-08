@@ -1,6 +1,6 @@
 # Exemples per provar
 
-En aquesta carpeta s'incorporaran projectes React que acompanyen els annexos
+En aquesta carpeta trobaràs projectes React que acompanyen els annexos
 i ajuden a experimentar amb conceptes concrets. No substitueixen el projecte
 acumulatiu de les activitats.
 
@@ -8,9 +8,11 @@ acumulatiu de les activitats.
 
 - `FitxaXX/`: exemples de la fitxa corresponent.
 - Si una fitxa té diversos projectes, cadascun tindrà una subcarpeta per tema.
-- Cada projecte inclourà un `README.md` amb els requisits, les comandes
+- Cada projecte inclou un `README.md` amb els requisits, les comandes
   d'instal·lació i execució, l'annex relacionat i els resultats a observar.
 
-Encara no hi ha projectes executables en aquesta carpeta. Mentrestant, pots
-provar el component complet de l'[annex de la Fitxa 01](../Annexos/Fitxa01_Annex_Actualitzacio_Estat.md)
-en un projecte React amb Vite, tal com s'hi explica.
+## Projectes disponibles
+
+- [Fitxa 01 — Actualització de l'estat](Fitxa01/README.md): formes directa i
+  funcional, tres actualitzacions consecutives, consola, booleans, inputs i
+  assignació d'un valor fix. Complementa l'[annex de la Fitxa 01](../Annexos/Fitxa01_Annex_Actualitzacio_Estat.md).
