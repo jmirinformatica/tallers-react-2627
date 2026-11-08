@@ -1,5 +1,7 @@
 # React: actualització de l'estat amb `useState`
 
+[← Torna a la Fitxa 01 — Primers passos amb React](../Fitxa01.md)
+
 ## Objectius
 
 Entendre la diferència entre aquestes dues expressions:

@@ -12,5 +12,5 @@ acumulatiu de les activitats.
   d'instal·lació i execució, l'annex relacionat i els resultats a observar.
 
 Encara no hi ha projectes executables en aquesta carpeta. Mentrestant, pots
-provar el component complet de l'[annex de la Fitxa 01](../Fitxa01_Annex_Actualitzacio_Estat.md)
+provar el component complet de l'[annex de la Fitxa 01](../Annexos/Fitxa01_Annex_Actualitzacio_Estat.md)
 en un projecte React amb Vite, tal com s'hi explica.

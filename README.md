@@ -33,7 +33,7 @@ fas servir Git: [git-scm.com](https://git-scm.com/downloads).
 
 Els annexos amplien conceptes concrets sense allargar les fitxes principals:
 
-- [Fitxa 01 — Actualització de l'estat amb useState](Fitxa01_Annex_Actualitzacio_Estat.md)
+- [Fitxa 01 — Actualització de l'estat amb useState](Annexos/Fitxa01_Annex_Actualitzacio_Estat.md)
 
 Els projectes per provar aquests conceptes s'incorporaran a
 [`exemples/`](exemples/README.md), agrupats per fitxa. Cada projecte tindrà
