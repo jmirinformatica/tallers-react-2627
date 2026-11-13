@@ -1,0 +1,47 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #17202a;
+  background: #f4f7fb;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 36rem;
+  margin: 3rem auto;
+  padding: 1.5rem;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #334155;
+  border-radius: 0.4rem;
+  background: white;
+  color: #17202a;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e2e8f0;
+}
+
+button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}

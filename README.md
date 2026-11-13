@@ -34,12 +34,14 @@ fas servir Git: [git-scm.com](https://git-scm.com/downloads).
 Els annexos amplien conceptes concrets sense allargar les fitxes principals:
 
 - [Fitxa 01 — Actualització de l'estat amb useState](Annexos/Fitxa01_Annex_Actualitzacio_Estat.md)
+- [Fitxa 02 — Components pare i fills: esborrar productes](Annexos/Fitxa02_Annex_Pare_Fills_Esborrar.md)
 
 Els projectes per provar aquests conceptes són a
 [`Exemples/`](Exemples/README.md), agrupats per fitxa. Cada projecte inclou
 instruccions per executar-lo i indicacions sobre què cal observar.
 
 - [Fitxa 01 — Experimenta amb l'actualització de l'estat](Exemples/Fitxa01/README.md)
+- [Fitxa 02 — Experimenta amb callbacks i l'esborrat de productes](Exemples/Fitxa02/README.md)
 
 ## Recursos oficials
 

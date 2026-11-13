@@ -16,3 +16,6 @@ acumulatiu de les activitats.
 - [Fitxa 01 — Actualització de l'estat](Fitxa01/README.md): formes directa i
   funcional, tres actualitzacions consecutives, consola, booleans, inputs i
   assignació d'un valor fix. Complementa l'[annex de la Fitxa 01](../Annexos/Fitxa01_Annex_Actualitzacio_Estat.md).
+- [Fitxa 02 — Pare, fills i esborrat de productes](Fitxa02/README.md): estat al
+  pare, una filera per producte i callback per esborrar-lo. Complementa
+  l'[annex de la Fitxa 02](../Annexos/Fitxa02_Annex_Pare_Fills_Esborrar.md).

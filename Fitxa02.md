@@ -201,6 +201,8 @@ function canvia(delta) {
 
 El fill decideix **quant** canvia; el pare decideix **com** es guarda.
 
+> **Per veure per què cal passar una funció al fill:** l'[annex «Pare, fills i callbacks: esborrar un producte»](Annexos/Fitxa02_Annex_Pare_Fills_Esborrar.md) segueix el clic d'una filera fins a l'estat del pare. Pots provar el [projecte de demostració](Exemples/Fitxa02/README.md). És material complementari: no afegeix requisits a les activitats.
+
 Conveni de noms:
 
 - El prop del fill sol començar per `on`: `onCanvia`, `onIncrementa`, `onReinicia`.
