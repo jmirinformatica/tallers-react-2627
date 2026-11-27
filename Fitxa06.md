@@ -3,14 +3,14 @@
 > **Objectiu general:** convertir `hola-mon` en una aplicació amb diverses pantalles, mantenint l'estat compartit i la persistència de la Fitxa 05. Aprendràs a definir rutes, navegar sense recarregar la pàgina, compartir un layout, llegir paràmetres de la URL i mostrar una pàgina 404.
 
 - **Temps estimat total:** 3 hores (2 h 25 min a classe; 15 min de lectura prèvia i 20 min de treball posterior).
-- **Requisits previs:** haver completat la [Fitxa 05](Fitxa05.md) o tenir un `hola-mon` equivalent amb `TasquesProvider`, `FiltreTasquesProvider`, `useLocalStorage` i la llista de tasques funcionant.
+- **Requisits previs:** haver completat la [Fitxa 05](Fitxa05.md) o tenir un `hola-mon` equivalent amb un únic `TasquesProvider`, consum directe amb `useContext`, filtre local a `App` i persistència robusta de tasques i filtre.
 - **Projecte:** **no en crees un de nou**. Treballes dins de `hola-mon`.
 - **Abans de classe (15 min):** llegeix els apartats 1.2–1.5 sobre SPA, rutes, `Link`/`NavLink` i `Outlet`.
 - **Versions utilitzades:** React 19.3.1, Vite 8.3.4, Tailwind CSS 4.3.3 i `react-router` 8.5.0.
 
 > **Per què React Router 8?** Els equips del taller fan servir Node 22.22.3, que compleix el requisit `>=22.22.0` de la branca 8. A la versió 8 el paquet s'importa de `react-router`; `react-router-dom` no té branca 8. La versió 8.5.0 també requereix React `>=19.2.7`, i el projecte fa servir React 19.3.1. Comprova la teva versió amb `node --version`.
 
-> **Projecte acumulatiu:** la Fitxa 06 no canvia el model de dades ni la persistència. Afegeix una capa de navegació per sobre dels components que ja tens. En acabar, les tasques continuaran vivint als providers i sobreviuran tant als canvis de pàgina com a les recàrregues.
+> **Projecte acumulatiu:** la Fitxa 06 no canvia el model de dades ni les claus de persistència. Afegeix navegació i mou el filtre d'`App` a `PaginaTasques`, juntament amb la seva lectura i escriptura. Les tasques continuen al mateix provider. No cal crear un context de filtre ni implementar `useLocalStorage`: l'ampliació opcional de la Fitxa 05 continua sent opcional.
 
 ## Continguts
 
@@ -46,13 +46,12 @@ A la [Fitxa 05](Fitxa05.md) has deixat una aplicació d'una sola pantalla:
 ```text
 main.jsx
 └── TasquesProvider
-    └── FiltreTasquesProvider
-        └── App
-            ├── Comptador
-            ├── FormulariTasca
-            ├── FiltreTasques
-            └── LlistaTasques
-                └── Tasca
+    └── App                    ← filtre local i persistència del filtre
+        ├── Comptador
+        ├── FormulariTasca
+        ├── FiltreTasques      ← rep filtre i callback
+        └── LlistaTasques      ← rep filtre i consumeix TasquesContext
+            └── Tasca
 ```
 
 Tot funciona, però tot viu a la mateixa pàgina:
@@ -77,14 +76,13 @@ En acabar la fitxa, l'arquitectura serà semblant a aquesta:
 main.jsx
 └── BrowserRouter
     └── TasquesProvider
-        └── FiltreTasquesProvider
-            └── App
-                └── Routes
-                    └── Layout
-                        ├── PaginaInici
-                        ├── PaginaTasques
-                        ├── PaginaTasca
-                        └── PaginaNoTrobada
+        └── App
+            └── Routes
+                └── Layout
+                    ├── PaginaInici    ← comptador local
+                    ├── PaginaTasques  ← filtre local persistent
+                    ├── PaginaTasca
+                    └── PaginaNoTrobada
 ```
 
 I les rutes seran:
@@ -96,7 +94,7 @@ I les rutes seran:
 | `/tasques/:id` | Detall d'una tasca concreta |
 | `*` | Pàgina no trobada |
 
-Els providers continuaran **per sobre** de les rutes. Això és fonamental: si els poses a dins d'una pàgina, es desmuntaran en navegar i perdran l'estat viu. El comptador, en canvi, passarà a ser estat local de `PaginaInici`; per això es reiniciarà quan surtis i tornis a entrar. Aquest comportament és deliberat i el comentarem.
+`TasquesProvider` continuarà **per sobre** de les rutes: la llista i el detall comparteixen el mateix estat viu. El comptador serà local de `PaginaInici` i es reiniciarà en sortir-ne. El filtre serà local de `PaginaTasques`, però en tornar-hi es recuperarà de `localStorage`.
 
 ### 1.2 Aplicació d'una sola pàgina i encaminament al client
 
@@ -163,15 +161,12 @@ import { BrowserRouter } from 'react-router'
 import './index.css'
 import App from './App.jsx'
 import TasquesProvider from './context/TasquesProvider.jsx'
-import FiltreTasquesProvider from './context/FiltreTasquesProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <TasquesProvider>
-        <FiltreTasquesProvider>
-          <App />
-        </FiltreTasquesProvider>
+        <App />
       </TasquesProvider>
     </BrowserRouter>
   </StrictMode>,
@@ -357,9 +352,11 @@ Per enllaçar cada tasca amb el seu detall:
 A `PaginaTasca`, busca la tasca dins del context:
 
 ```jsx
-const { tasques } = useTasques()
+const { tasques } = useContext(TasquesContext)
 const tasca = tasques.find((candidata) => candidata.id === id)
 ```
+
+Importa `useContext` de `react` i `TasquesContext` de `../context/TasquesContext.js`, igual que als consumidors de la Fitxa 04.
 
 Si no existeix, no has de mostrar una pàgina en blanc ni deixar que l'aplicació falli. Mostra un missatge de «Tasca no trobada» amb un enllaç per tornar a la llista.
 
@@ -416,18 +413,15 @@ A `main.jsx` tenim aquesta composició:
 ```jsx
 <BrowserRouter>
   <TasquesProvider>
-    <FiltreTasquesProvider>
-      <App />
-    </FiltreTasquesProvider>
+    <App />
   </TasquesProvider>
 </BrowserRouter>
 ```
 
-Per què els providers van per sobre de `Routes`?
+Per què `TasquesProvider` va per sobre de `Routes`?
 
-- Les rutes canvien quin component es renderitza, però **no desmunten** els providers que les envolten.
-- Per tant, `tasques` i `filtre` continuen sent el mateix estat en memòria.
-- `FiltreTasquesProvider` necessita `TasquesProvider` per calcular els comptadors; per això va a dins.
+- Les rutes canvien quin component es renderitza, però **no desmunten** el provider que les envolta.
+- Per tant, `tasques` continua sent el mateix estat en memòria i es consumeix amb `useContext(TasquesContext)` tant a la llista com al detall.
 - Si poses un provider dins de `PaginaTasques`, en sortir de la pàgina es desmuntarà. Encara que `localStorage` torni a carregar les dades, hauràs perdut l'estat viu i l'ordre de les operacions pot canviar.
 
 El comptador és diferent. A la Fitxa 05 vivia a `App`, per sobre de tot. Ara el movem a `PaginaInici` perquè és estat **local d'una pàgina**:
@@ -440,6 +434,10 @@ function PaginaInici() {
 ```
 
 Quan surts d'Inici, el component es desmunta i el comptador es reinicia. No és un error: és el comportament esperat d'un estat local. Si volguéssim conservar-lo, l'hauríem de posar en un provider o a `localStorage`, però no ho necessitem per a aquesta demo.
+
+El filtre també és local d'una pantalla: el movem d'`App` a `PaginaTasques` amb `CLAU_FILTRE`, `FILTRES_VALIDS`, `llegeixFiltre` i l'efecte de desament de la Fitxa 05. En sortir, aquest estat es desmunta; en tornar, `useState(llegeixFiltre)` recupera el valor desat. **No és el mateix estat viu**, encara que l'usuari vegi el mateix filtre. Si l'escriptura a `localStorage` falla, el filtre funciona durant la visita però no se'n garanteix la recuperació en tornar.
+
+`PaginaTasques` calcula `pendents` i `fetes` a partir de les tasques del context. Passa `filtre` i `onCanviaFiltre` a `FiltreTasques`, i només `filtre` a `LlistaTasques`, que continua calculant la llista filtrada al render. No guardem cap d'aquests valors derivats.
 
 > **Regla:** l'estat compartit per diverses rutes viu per sobre de les rutes; l'estat propi d'una pantalla viu dins de la pantalla.
 
@@ -480,12 +478,8 @@ src/
 │   ├── Targeta.jsx
 │   └── Tasca.jsx
 ├── context/
-│   ├── FiltreTasquesContext.js
-│   ├── FiltreTasquesProvider.jsx
 │   ├── TasquesContext.js
 │   └── TasquesProvider.jsx
-├── hooks/
-│   └── useLocalStorage.js
 ├── pages/
 │   ├── PaginaInici.jsx
 │   ├── PaginaNoTrobada.jsx
@@ -500,12 +494,13 @@ Responsabilitats:
 
 | Fitxer | Responsabilitat |
 | --- | --- |
-| `main.jsx` | Muntar React, `BrowserRouter` i els providers. |
+| `main.jsx` | Muntar React, `BrowserRouter` i l'únic `TasquesProvider`. |
 | `App.jsx` | Declarar les rutes. |
 | `Layout.jsx` | Capçalera, navegació, `Outlet` i peu. |
 | `pages/` | Contingut de cada pantalla. |
 | `Tasca.jsx` | Mostrar una tasca i enllaçar al seu detall. |
-| `context/` | Estat compartit i persistència. |
+| `context/` | Estat compartit de tasques i la seva persistència explícita. |
+| `PaginaTasques.jsx` | Filtre local persistent i comptadors derivats de les tasques. |
 
 Resum de l'API:
 
@@ -559,8 +554,8 @@ Si la instal·lació falla per la versió de Node, comprova que tens Node `>=22.
 A `src/main.jsx`:
 
 1. Importa `BrowserRouter` de `react-router`.
-2. Embolega `TasquesProvider` i `FiltreTasquesProvider` amb `BrowserRouter`.
-3. Deixa `App` a dins dels providers.
+2. Embolcalla l'únic `TasquesProvider` amb `BrowserRouter`.
+3. Deixa `App` a dins del provider. No creïs cap provider de filtre.
 
 L'ordre ha de ser:
 
@@ -568,9 +563,7 @@ L'ordre ha de ser:
 <StrictMode>
   <BrowserRouter>
     <TasquesProvider>
-      <FiltreTasquesProvider>
-        <App />
-      </FiltreTasquesProvider>
+      <App />
     </TasquesProvider>
   </BrowserRouter>
 </StrictMode>
@@ -626,20 +619,23 @@ function PaginaInici() {
 }
 ```
 
-**Comprovació:** el comptador continua funcionant quan la pàgina encara no té rutes; només l'has mogut de lloc.
+**Comprovació:** el component compila; en connectar les rutes a l'esglaó 5 podràs provar el comptador.
 
 ### Esglaó 4 — Crear `PaginaTasques`
 
 1. Crea `src/pages/PaginaTasques.jsx`.
 2. Mou-hi el formulari, el filtre, la llista i els comptadors.
-3. Consumeix `useFiltreTasques()` per obtenir `pendents` i `fetes`.
-4. No passis les tasques per props: els components ja les llegeixen del context.
+3. Mou-hi d'`App` la persistència completa del filtre: constants, `llegeixFiltre` amb validació i `try/catch`, estat amb inicialitzador mandrós i `useEffect` de desament amb dependència `[filtre]`. Conserva la clau `hola-mon.filtre`.
+4. Importa `useContext`, `useEffect` i `useState` de `react`, i `TasquesContext` de `../context/TasquesContext.js`. Consumeix `tasques` i mou-hi el càlcul de `pendents` i `fetes` que ja tens a `App`.
+5. Passa `filtre` i `onCanviaFiltre={setFiltre}` a `FiltreTasques`, i `filtre` a `LlistaTasques`. Les tasques i les accions continuen consumint-se directament del context, sense props noves.
 
 L'estructura pot ser:
 
 ```jsx
 function PaginaTasques() {
-  const { pendents, fetes } = useFiltreTasques()
+  const [filtre, setFiltre] = useState(llegeixFiltre)
+  const { tasques } = useContext(TasquesContext)
+  // Mou aquí l'efecte de desament i els càlculs de pendents/fetes.
 
   return (
     <div>
@@ -649,21 +645,21 @@ function PaginaTasques() {
         <p aria-live="polite">
           Pendents: {pendents} · Fetes: {fetes}
         </p>
-        <FiltreTasques />
-        <LlistaTasques />
+        <FiltreTasques filtre={filtre} onCanviaFiltre={setFiltre} />
+        <LlistaTasques filtre={filtre} />
       </Targeta>
     </div>
   )
 }
 ```
 
-**Comprovació:** la pàgina de tasques mostra el mateix comportament que abans: afegir, completar, eliminar i filtrar.
+**Comprovació:** en connectar les rutes a l'esglaó 5, la pàgina ha de permetre afegir, completar, eliminar i filtrar com abans. No hi ha cap context de filtre ni cap hook personalitzat obligatori.
 
 ### Esglaó 5 — Definir les rutes i la navegació
 
 A `src/App.jsx`:
 
-1. Elimina el comptador i la llista de tasques: ja no viuen aquí.
+1. Retira d'`App` el comptador, el filtre i la seva persistència, els comptadors derivats i els components de tasques: ja els has mogut a les pàgines. Elimina'n també els imports que ja no s'utilitzen.
 2. Importa `Link`, `Route` i `Routes`.
 3. Importa les dues pàgines.
 4. Crea una capçalera amb dos enllaços.
@@ -701,13 +697,13 @@ function App() {
 ### Esglaó 6 — Provar la separació
 
 1. Ves a Inici i apuja el comptador.
-2. Ves a Tasques, afegeix una tasca i marca-la.
+2. Ves a Tasques, afegeix una tasca, marca-la i tria el filtre «Fetes».
 3. Torna a Inici: el comptador ha de ser zero.
-4. Torna a Tasques: la tasca i el filtre han de continuar.
-5. Recarrega directament `/tasques` amb `npm run dev`: ha de funcionar.
-6. Comprova que els enllaços no provoquen una recàrrega completa. Una manera ràpida: mira si les tasques es mantenen en navegar i si el comptador es reinicia en tornar a Inici.
+4. Torna a Tasques: la tasca continua al provider i el filtre «Fetes» es recupera de `localStorage`.
+5. Comprova a **Network**, amb **Preserve log** activat i filtrant per **Doc**, que clicar els enllaços no provoca peticions de document noves. La persistència de les tasques i el reinici del comptador, per si sols, no demostren que no hi hagi recàrrega.
+6. **Treball posterior:** recarrega directament `/tasques` amb `npm run dev`: ha de funcionar.
 
-**Comprovació:** entens quina part de l'estat és compartida (tasques i filtre) i quina és local (comptador).
+**Comprovació:** distingeixes les tasques compartides al provider, el filtre local persistent i el comptador local sense persistència.
 
 ### Repte opcional
 
@@ -869,7 +865,7 @@ La ruta ha de quedar **després** de `tasques` per llegibilitat, encara que Reac
 
 1. Crea `src/pages/PaginaTasca.jsx`.
 2. Importa `Link`, `useNavigate` i `useParams`.
-3. Importa `useTasques` i `Targeta`.
+3. Importa `useContext` de `react`, `TasquesContext` de `../context/TasquesContext.js` i `Targeta`.
 4. Llegeix `id` amb `useParams()`.
 5. Busca la tasca amb `tasques.find(...)`.
 6. Si no existeix, mostra una targeta «Tasca no trobada» amb un enllaç a `/tasques`.
@@ -879,15 +875,16 @@ La ruta ha de quedar **després** de `tasques` per llegibilitat, encara que Reac
 L'os del component:
 
 ```jsx
+import { useContext } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import Boto from '../components/Boto.jsx'
 import Targeta from '../components/Targeta.jsx'
-import { useTasques } from '../context/TasquesContext.js'
+import { TasquesContext } from '../context/TasquesContext.js'
 
 function PaginaTasca() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { tasques, toggleTasca, eliminaTasca } = useTasques()
+  const { tasques, toggleTasca, eliminaTasca } = useContext(TasquesContext)
 
   const tasca = tasques.find((candidata) => candidata.id === id)
 
@@ -976,7 +973,7 @@ Fes aquestes comprovacions després de completar el flux principal de detall i n
 ### Repte opcional
 
 - Afegeix un botó «Torna enrere» amb `navigate(-1)` i compara'l amb l'enllaç explícit a `/tasques`. Quin és més previsible si algú obre el detall directament?
-- Obre el detall després de filtrar per «Pendents» i torna: el filtre s'ha de conservar perquè viu al provider.
+- Obre el detall després de filtrar per «Pendents» i torna: el filtre es recupera de `localStorage`, no d'un provider de filtre.
 
 ---
 
@@ -987,7 +984,9 @@ Marca cada criteri quan el compleixis:
 - [ ] Has continuat dins del projecte `hola-mon`; no n'has creat un de nou.
 - [ ] `react-router@8.5.0` és a `package.json`.
 - [ ] `main.jsx` embolcalla l'aplicació amb un sol `BrowserRouter`.
-- [ ] `TasquesProvider` i `FiltreTasquesProvider` estan per sobre de `Routes`.
+- [ ] L'únic `TasquesProvider` està per sobre de `Routes` i els consumidors utilitzen `useContext(TasquesContext)`.
+- [ ] `PaginaTasques` posseeix el filtre i la seva persistència explícita; `useLocalStorage` continua sent opcional.
+- [ ] `FiltreTasques` rep el filtre i el callback; `LlistaTasques` rep el filtre i calcula la llista visible.
 - [ ] La ruta `/` mostra `PaginaInici`.
 - [ ] La ruta `/tasques` mostra `PaginaTasques`.
 - [ ] La ruta `/tasques/:id` mostra `PaginaTasca`.
@@ -999,7 +998,7 @@ Marca cada criteri quan el compleixis:
 - [ ] (Treball posterior) Un `id` inexistent mostra «Tasca no trobada», no una pantalla blanca.
 - [ ] `useNavigate()` torna a `/tasques` després d'eliminar.
 - [ ] El detall i la llista comparteixen l'estat del `TasquesProvider`.
-- [ ] Les tasques i el filtre sobreviuen a la navegació. (La recàrrega directa és treball posterior.)
+- [ ] Les tasques mantenen l'estat viu al provider en navegar; el filtre es recupera de `localStorage` en tornar. (La recàrrega directa és treball posterior.)
 - [ ] El comptador és estat local de `PaginaInici` i s'ha explicat per què es reinicia.
 - [ ] (Treball posterior) Recarregar directament `/tasques` o `/tasques/:id` funciona en desenvolupament.
 - [ ] Saps què cal configurar en un servidor estàtic per publicar `BrowserRouter`.
@@ -1015,7 +1014,7 @@ La comprovació d'IDs invàlids, les recàrregues directes i la revisió visual/
 
 Guarda `hola-mon` amb les rutes funcionant. A la [Fitxa 07](Fitxa07.md) consumiràs **APIs públiques** des de React: càrrega de dades, estats de càrrega i error, respostes niuades i cancel·lació de peticions. També pots aprofitar per publicar el projecte i comprovar la reescriptura de rutes en un servei real.
 
-No cal tornar a executar `npm create vite` ni canviar els providers. La navegació és una capa nova sobre el projecte acumulatiu.
+No cal tornar a executar `npm create vite` ni canviar `TasquesProvider`. La navegació és una capa nova sobre el projecte acumulatiu.
 
 ---
 
