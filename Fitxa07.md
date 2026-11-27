@@ -773,17 +773,15 @@ const [error, setError] = useState('')
 const [recarregar, setRecarregar] = useState(0)
 
 useEffect(() => {
-  const controlador = new AbortController()
-
   async function carrega() {
     // ...
   }
 
   carrega()
-
-  return () => controlador.abort()
 }, [recarregar])
 ```
+
+En aquest primer component no creïs encara cap `AbortController` ni funció de neteja. La petició es cancel·larà a l'Activitat 3.
 
 Al JSX:
 
